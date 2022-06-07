@@ -388,26 +388,16 @@ class Recognizer:
         ) = build_model(alphabet=alphabet, **build_params)
         if weights is not None:
             weights_dict = PRETRAINED_WEIGHTS[weights]
-            if alphabet == weights_dict["alphabet"]:
-                self.model.load_weights(
-                    tools.download_and_verify(
-                        url=weights_dict["weights"]["top"]["url"],
-                        filename=weights_dict["weights"]["top"]["filename"],
-                        sha256=weights_dict["weights"]["top"]["sha256"],
-                    )
+            print(
+                "Loading backbone weights only."
+            )
+            self.backbone.load_weights(
+                tools.download_and_verify(
+                    url=weights_dict["weights"]["notop"]["url"],
+                    filename=weights_dict["weights"]["notop"]["filename"],
+                    sha256=weights_dict["weights"]["notop"]["sha256"],
                 )
-            else:
-                print(
-                    "Provided alphabet does not match pretrained alphabet. "
-                    "Using backbone weights only."
-                )
-                self.backbone.load_weights(
-                    tools.download_and_verify(
-                        url=weights_dict["weights"]["notop"]["url"],
-                        filename=weights_dict["weights"]["notop"]["filename"],
-                        sha256=weights_dict["weights"]["notop"]["sha256"],
-                    )
-                )
+            )
 
     def get_batch_generator(self, image_generator, batch_size=8, lowercase=False):
         """
